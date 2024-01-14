@@ -1,6 +1,7 @@
 from pathlib import Path
 import environ
 import pymysql
+import os
 
 pymysql.install_as_MySQLdb()
 
@@ -45,7 +46,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-LOCAL_APPS = []
+LOCAL_APPS = ["core_apps.pizza"]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
@@ -75,18 +76,26 @@ WSGI_APPLICATION = "Pizzeria.wsgi.application"
 
 # DATABASES = {"default": env.db("DATABASE_URL")}
 # DATABASES["default"]["ATOMIC_REQUESTS"] = True
-
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.mysql",
+        "NAME": "Pizzeria",
+        "USER": "root",
+        "PASSWORD": "Algorithms@123",
+        "HOST": "127.0.0.1",
+        "PORT": "3306",
+    }
+}
 # DATABASES = {
 #     "default": {
 #         "ENGINE": "django.db.backends.mysql",
-#         "NAME": "Pizzeria",
-#         "USER": "root",
-#         "PASSWORD": "Algorithms@123",
-#         "HOST": "127.0.0.1",
-#         "PORT": "3306",
+#         "HOST": os.environ.get("DB_HOST"),
+#         "NAME": os.environ.get("DB_NAME"),
+#         "USER": os.environ.get("DB_USER"),
+#         "PASSWORD": os.environ.get("DB_PASS"),
 #     }
 # }
-DATABASES = {"default": env.db("DATABASE_URL")}
+# DATABASES = {"default": env.db("DATABASE_URL")}
 DATABASES["default"]["ATOMIC_REQUESTS"] = True
 
 PASSWORD_HASHERS = [
