@@ -1,9 +1,10 @@
 from pathlib import Path
 import environ
-import pymysql
+
+# import pymysql
 import os
 
-pymysql.install_as_MySQLdb()
+# pymysql.install_as_MySQLdb()
 
 env = environ.Env()
 
@@ -80,7 +81,7 @@ DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
         "NAME": "Pizzeria",
-        "USER": "root",
+        "USER": "pizzeria_user",
         "PASSWORD": "Algorithms@123",
         "HOST": "127.0.0.1",
         "PORT": "3306",
@@ -166,3 +167,32 @@ MEDIA_ROOT = str(ROOT_DIR / "mediafiles")
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 CORS_URLS_REGEX = r"^/api/.*$"
+
+# CELERY_BROKER_URL = env("CELERY_BROKER")
+# CELERY_RESULT_BACKEND = env("CELERY_BACKEND")
+CELERY_BROKER = "redis://localhost:6379/0"
+CELERY_BACKEND = "redis://localhost:6379/0"
+CELERY_TIMEZONE = "Asia/Kolkata"
+CELERY_ACCEPT_CONTENT = ["json"]
+CELERY_TASK_SERIALIZER = "json"
+CELERY_RESULT_SERIALIZER = "json"
+
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "verbose": {
+            "format": "%(levelname)s %(name)-12s %(asctime)s %(module)s "
+            "%(process)d %(thread)d %(message)s"
+        }
+    },
+    "handlers": {
+        "console": {
+            "level": "DEBUG",
+            "class": "logging.StreamHandler",
+            "formatter": "verbose",
+        }
+    },
+    "root": {"level": "INFO", "handlers": ["console"]},
+}

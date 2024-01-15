@@ -1,0 +1,51 @@
+version: '3'
+
+services:
+  mysql:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: Algorithms@123
+      MYSQL_DATABASE: Pizzeria
+      MYSQL_USER: pizzeria_user
+      MYSQL_PASSWORD: Algorithms@123
+    ports:
+      - "3306:3306"
+    networks:
+      - pizzeria-api-live
+
+  web:
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - mysql
+      - redis
+    networks:
+      - pizzeria-api-live
+
+  redis:
+    image: redis:6-alpine
+    container_name: redis
+    networks:
+      - pizzeria-api-live
+
+  celery:
+    build: .
+    command: celery -A Pizzeria worker -l info
+    volumes:
+      - .:/app
+    depends_on:
+      - mysql
+      - redis
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    networks:
+      - pizzeria-api-live
+
+networks:
+  pizzeria-api-live:
+    driver: bridge
